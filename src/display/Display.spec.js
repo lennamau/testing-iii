@@ -1,11 +1,9 @@
 import React from "react";
-import { render, fireEvent } from "react-testing-library";
+import { render } from "react-testing-library";
 import "jest-dom/extend-expect";
 import renderer from "react-test-renderer";
 import "react-testing-library/cleanup-after-each";
 import Display from "./Display";
-import Dashboard from "../dashboard/Dashboard";
-import Controls from "../controls/Controls";
 
 describe("<Display />", () => {
   it("matches snapshot on initial page load", () => {
@@ -25,52 +23,29 @@ describe("<Display />", () => {
   });
 });
 
-describe("Button functionality on Display", () => {
+describe("Color functionality on Display", () => {
+    it('displays green when gate is open', () => {
+        const display = render(<Display closed={false}/>);
+        const open= display.getByText(/open/i);
+        expect(open).toHaveClass('led green-led');
+    });
 
-  it("display closed when closed button clicked", () => {
-    render(<Dashboard />);
-    const controls = render(<Controls />);
-    const closeBtn = controls.getByText(/close gate/i);
-    const display = render(<Display />);
-    const closed = display.getByText(/open/i);
-    fireEvent.click(closeBtn);
-    expect(closed).toHaveTextContent(/closed/i);
-  });
+    it('displays red when gate is closed', () => {
+        const display = render(<Display closed={true}/>);
+        const closed = display.getByText(/closed/i);
+        expect(closed).toHaveClass('led red-led');
+    });
 
-  it("display open when open button clicked", () => {
-    render(<Dashboard />);
-    const controls = render(<Controls />);
-    const closeBtn = controls.getByText(/close gate/i);
-    const display = render(<Display />);
-    const open = display.getByText(/open/i);
-    fireEvent.click(closeBtn);
-    fireEvent.click(closeBtn);
-    expect(open).toHaveTextContent(/open/i);
-  });
+    it('displays green when gate is unlocked', () => {
+        const display = render(<Display locked={false}/>);
+        const unlocked= display.getByText(/unlocked/i);
+        expect(unlocked).toHaveClass('led green-led');
+    });
 
-  it("displays locked when lock button is clicked", () => {
-    render(<Dashboard />);
-    const controls = render(<Controls />);
-    const closeBtn = controls.getByText(/close gate/i);
-    const lockBtn = controls.getByText(/lock gate/i);
-    const display = render(<Display />);
-    const locked = display.getByText(/unlocked/i);
-    fireEvent.click(closeBtn);
-    fireEvent.click(lockBtn);
-    expect(locked).toHaveTextContent(/locked/i);
-  });
-
-  it("displays unlocked when unlock button is clicked", () => {
-    render(<Dashboard />);
-    const controls = render(<Controls />);
-    const closeBtn = controls.getByText(/close gate/i);
-    const lockBtn = controls.getByText(/lock gate/i);
-    const display = render(<Display />);
-    const unlocked = display.getByText(/unlocked/i);
-    fireEvent.click(closeBtn);
-    fireEvent.click(lockBtn);
-    fireEvent.click(lockBtn);
-    expect(unlocked).toHaveTextContent(/unlocked/i);
-  });
+    it('displays red when gate is locked', () => {
+        const display = render(<Display locked={true}/>);
+        const locked = display.getByText(/locked/i);
+        expect(locked).toHaveClass('led red-led');
+    });
 
 });
